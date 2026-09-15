@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Java 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -22,4 +22,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build
-        run: ./gradlew build --stacktrace
+        shell: bash
+        run: |
+          set +e
+          ./gradlew build --stacktrace 2>&1 | tee gradle-build.log
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            # Последние строки публикуются как annotation и остаются доступны через GitHub API.
+            details=$(tail -n 120 gradle-build.log | sed 's/%/%25/g; s/\r/%0D/g; s/$/%0A/' | tr -d '\n')
+            echo "::error title=Gradle build failed::$details"
+          fi
+          exit "$status"
