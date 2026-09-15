@@ -1,6 +1,9 @@
 package com.decayingcode;
 
+import com.decayingcode.client.ClientModEvents;
 import com.decayingcode.sanity.network.SanityNetwork;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
 /**
@@ -15,5 +18,8 @@ public final class TheDecayingCode {
 
     public TheDecayingCode() {
         SanityNetwork.register();
+
+        // Клиентский класс не должен загружаться на dedicated server.
+        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientModEvents::register);
     }
 }

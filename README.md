@@ -14,9 +14,13 @@
 
 ```text
 src/main/java/com/decayingcode/
-├── TheDecayingCode.java                    # точка входа и регистрация сети
-├── client/data/
-│   └── ClientSanityData.java               # клиентское зеркало для будущего HUD
+├── TheDecayingCode.java                    # точка входа, регистрация сети и клиента
+├── client/
+│   ├── ClientModEvents.java                # RegisterGuiOverlaysEvent на MOD bus
+│   ├── data/
+│   │   └── ClientSanityData.java           # клиентское зеркало рассудка
+│   └── gui/
+│       └── EyeHudOverlay.java              # отрисовка глаза через GuiGraphics.blit
 ├── registry/
 │   └── ModSounds.java                      # регистрация шепота и шагов
 └── sanity/
@@ -37,7 +41,8 @@ src/main/resources/
 ├── META-INF/mods.toml
 └── assets/decaying_code/
     ├── sounds.json                         # пока использует ванильные sound events
-    └── lang/{ru_ru,en_us}.json
+    ├── lang/{ru_ru,en_us}.json
+    └── textures/gui/eye.png                # физическая текстура HUD 16x16
 ```
 
 ## Правила рассудка
@@ -51,7 +56,11 @@ src/main/resources/
 5. При значении ниже `50` раз в пять секунд есть шанс 25% услышать шепот или шаги. Звук отправляется только затронутому игроку.
 6. При значении ниже `20` накладывается слепота на 40 тиков (2 секунды).
 
-Сервер — единственный источник истины. Будущий HUD должен читать значение через `ClientSanityData.getSanity()`.
+Сервер — единственный источник истины. Клиентский HUD может читать значение через `ClientSanityData.getSanity()`.
+
+## HUD глаза
+
+Клиент регистрирует `EyeHudOverlay` через `RegisterGuiOverlaysEvent` непосредственно на MOD event bus. Иконка рисуется поверх ванильного HUD методом `GuiGraphics.blit()` в правом верхнем углу и скрывается вместе с интерфейсом по F1. Файл текстуры обязательно упаковывается как `assets/decaying_code/textures/gui/eye.png`.
 
 ## Запуск
 

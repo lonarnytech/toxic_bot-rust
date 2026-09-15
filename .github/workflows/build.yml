@@ -39,22 +39,31 @@ jobs:
           fi
           exit "$status"
 
+      - name: Verify eye texture in JAR
+        shell: bash
+        run: |
+          jar_file=$(find build/libs -maxdepth 1 -name 'decaying_code-*.jar' -print -quit)
+          test -n "$jar_file"
+          jar tf "$jar_file" | grep -Fx 'assets/decaying_code/textures/gui/eye.png'
+
       - name: Upload compiled JAR
         uses: actions/upload-artifact@v4
         with:
           name: decaying-code-1.20.1
-          path: build/libs/decaying_code-0.1.0-1.20.1.jar
+          path: build/libs/decaying_code-*.jar
           if-no-files-found: error
 
       - name: Add installable JAR to the branch
         if: github.event_name == 'push'
         shell: bash
         run: |
+          jar_file=$(find build/libs -maxdepth 1 -name 'decaying_code-*.jar' -print -quit)
           mkdir -p artifacts
-          cp build/libs/decaying_code-0.1.0-1.20.1.jar artifacts/
+          rm -f artifacts/decaying_code-*.jar
+          cp "$jar_file" artifacts/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add artifacts/decaying_code-0.1.0-1.20.1.jar
+          git add -A artifacts/
           if ! git diff --cached --quiet; then
             git commit -m "Add compiled Decaying Code JAR [skip ci]"
             git push origin "HEAD:${GITHUB_REF_NAME}"
