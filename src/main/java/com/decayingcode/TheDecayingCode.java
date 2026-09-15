@@ -5,6 +5,7 @@ import com.decayingcode.sanity.network.SanityNetwork;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Главная точка входа мода The Decaying Code.
@@ -16,10 +17,14 @@ import net.minecraftforge.fml.common.Mod;
 public final class TheDecayingCode {
     public static final String MOD_ID = "decaying_code";
 
-    public TheDecayingCode() {
+    public TheDecayingCode(FMLJavaModLoadingContext context) {
         SanityNetwork.register();
 
-        // Клиентский класс не должен загружаться на dedicated server.
-        DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientModEvents::register);
+        // В Forge 47.4 контекст конструктора заменяет устаревший статический get().
+        // Двойной Supplier не загружает клиентский класс на dedicated server.
+        DistExecutor.unsafeRunWhenOn(
+                Dist.CLIENT,
+                () -> () -> ClientModEvents.register(context.getModEventBus())
+        );
     }
 }

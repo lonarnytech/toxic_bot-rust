@@ -3,7 +3,6 @@ package com.decayingcode.client;
 import com.decayingcode.client.gui.EyeHudOverlay;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 /**
  * Клиентская точка регистрации. Класс загружается только на физическом клиенте
@@ -16,8 +15,7 @@ public final class ClientModEvents {
     /**
      * Подписывает клиентские события именно на MOD event bus Forge 1.20.1.
      */
-    public static void register() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public static void register(IEventBus modEventBus) {
         modEventBus.addListener(ClientModEvents::registerGuiOverlays);
     }
 
