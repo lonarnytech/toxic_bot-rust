@@ -20,7 +20,7 @@ src/main/java/com/decayingcode/
 │   ├── data/
 │   │   └── ClientSanityData.java           # клиентское зеркало рассудка
 │   └── gui/
-│       └── EyeHudOverlay.java              # отрисовка глаза через GuiGraphics.blit
+│       └── SanityHudOverlay.java            # число, покраснение и дрожание глаза
 ├── registry/
 │   └── ModSounds.java                      # регистрация шепота и шагов
 └── sanity/
@@ -34,8 +34,8 @@ src/main/java/com/decayingcode/
     │   ├── SanityTickEvents.java           # свет, восстановление и эффекты
     │   └── ClientSanityEvents.java         # сброс кэша при выходе
     └── network/
-        ├── SanityNetwork.java              # SimpleChannel SERVER -> CLIENT
-        └── SanitySyncPacket.java
+        ├── SanityNetwork.java              # SimpleChannel и sendToPlayer
+        └── SanitySyncS2CPacket.java         # запись в ClientSanityData
 
 src/main/resources/
 ├── META-INF/mods.toml
@@ -56,11 +56,11 @@ src/main/resources/
 5. При значении ниже `50` раз в пять секунд есть шанс 25% услышать шепот или шаги. Звук отправляется только затронутому игроку.
 6. При значении ниже `20` накладывается слепота на 40 тиков (2 секунды).
 
-Сервер — единственный источник истины. Клиентский HUD может читать значение через `ClientSanityData.getSanity()`.
+Сервер — единственный источник истины. После каждого изменения он отправляет владельцу `SanitySyncS2CPacket`; клиент записывает пакет через `ClientSanityData.set()`, а HUD читает только `ClientSanityData.get()`.
 
 ## HUD глаза
 
-Клиент регистрирует `EyeHudOverlay` через `RegisterGuiOverlaysEvent` непосредственно на MOD event bus. Иконка рисуется поверх ванильного HUD методом `GuiGraphics.blit()` в правом верхнем углу и скрывается вместе с интерфейсом по F1. Файл текстуры обязательно упаковывается как `assets/decaying_code/textures/gui/eye.png`.
+Клиент регистрирует `SanityHudOverlay` через `RegisterGuiOverlaysEvent` непосредственно на MOD event bus. Иконка рисуется поверх ванильного HUD методом `GuiGraphics.blit()` в правом верхнем углу и скрывается вместе с интерфейсом по F1. Под глазом выводится синхронизированное число. После первого падения рассудка глаз начинает краснеть и дрожать; интенсивность растет к нулю. Файл текстуры обязательно упаковывается как `assets/decaying_code/textures/gui/eye.png`.
 
 ## Запуск
 

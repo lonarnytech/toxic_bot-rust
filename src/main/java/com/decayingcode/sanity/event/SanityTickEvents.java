@@ -5,6 +5,7 @@ import com.decayingcode.registry.ModSounds;
 import com.decayingcode.sanity.capability.SanityCapability;
 import com.decayingcode.sanity.capability.PlayerSanity;
 import com.decayingcode.sanity.network.SanityNetwork;
+import com.decayingcode.sanity.network.SanitySyncS2CPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,11 +57,17 @@ public final class SanityTickEvents {
 
         player.getCapability(SanityCapability.INSTANCE).ifPresent(sanityData -> {
             boolean changed = updateSanity(level, playerPos, sanityData);
+            int playerSanity = sanityData.getSanity();
+
             if (changed) {
-                SanityNetwork.syncTo(player);
+                // Каждое серверное изменение немедленно попадает в клиентский кэш HUD.
+                SanityNetwork.sendToPlayer(
+                        new SanitySyncS2CPacket(playerSanity),
+                        player
+                );
             }
 
-            applyThresholdEffects(player, sanityData.getSanity());
+            applyThresholdEffects(player, playerSanity);
         });
     }
 

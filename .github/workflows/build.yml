@@ -39,12 +39,15 @@ jobs:
           fi
           exit "$status"
 
-      - name: Verify eye texture in JAR
+      - name: Verify HUD and synchronization in JAR
         shell: bash
         run: |
           jar_file=$(find build/libs -maxdepth 1 -name 'decaying_code-*.jar' -print -quit)
           test -n "$jar_file"
-          jar tf "$jar_file" | grep -Fx 'assets/decaying_code/textures/gui/eye.png'
+          entries=$(jar tf "$jar_file")
+          grep -Fx 'assets/decaying_code/textures/gui/eye.png' <<< "$entries"
+          grep -Fx 'com/decayingcode/client/gui/SanityHudOverlay.class' <<< "$entries"
+          grep -Fx 'com/decayingcode/sanity/network/SanitySyncS2CPacket.class' <<< "$entries"
 
       - name: Upload compiled JAR
         uses: actions/upload-artifact@v4

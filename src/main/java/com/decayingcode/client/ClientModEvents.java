@@ -1,6 +1,6 @@
 package com.decayingcode.client;
 
-import com.decayingcode.client.gui.EyeHudOverlay;
+import com.decayingcode.client.gui.SanityHudOverlay;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -21,6 +21,6 @@ public final class ClientModEvents {
 
     private static void registerGuiOverlays(RegisterGuiOverlaysEvent event) {
         // Поверх всех ванильных элементов, чтобы глаз не перекрывался другим HUD.
-        event.registerAboveAll("eye", EyeHudOverlay.INSTANCE);
+        event.registerAboveAll("sanity", SanityHudOverlay.INSTANCE);
     }
 }

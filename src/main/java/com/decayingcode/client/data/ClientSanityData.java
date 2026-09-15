@@ -6,8 +6,8 @@ import net.minecraft.util.Mth;
 /**
  * Клиентское зеркало серверного значения рассудка.
  *
- * <p>Будущий HUD должен читать данные отсюда, а не пытаться сам менять capability.
- * Сервер остается единственным источником истины.</p>
+ * <p>HUD только читает это значение. Изменять настоящий рассудок имеет право
+ * исключительно сервер, после чего он присылает SanitySyncS2CPacket.</p>
  */
 public final class ClientSanityData {
     private static int sanity = PlayerSanity.DEFAULT_SANITY;
@@ -15,11 +15,11 @@ public final class ClientSanityData {
     private ClientSanityData() {
     }
 
-    public static int getSanity() {
+    public static int get() {
         return sanity;
     }
 
-    public static void setSanity(int value) {
+    public static void set(int value) {
         sanity = Mth.clamp(value, PlayerSanity.MIN_SANITY, PlayerSanity.MAX_SANITY);
     }
 

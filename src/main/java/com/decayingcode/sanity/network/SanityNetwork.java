@@ -10,10 +10,10 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.simple.SimpleChannel;
 
 /**
- * Сетевой канал подсистемы рассудка.
+ * SimpleChannel и методы отправки пакетов подсистемы рассудка.
  */
 public final class SanityNetwork {
-    private static final String PROTOCOL_VERSION = "1";
+    private static final String PROTOCOL_VERSION = "2";
 
     private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
             .named(ResourceLocation.fromNamespaceAndPath(TheDecayingCode.MOD_ID, "sanity"))
@@ -33,22 +33,26 @@ public final class SanityNetwork {
         }
         registered = true;
 
-        CHANNEL.messageBuilder(SanitySyncPacket.class, 0, NetworkDirection.PLAY_TO_CLIENT)
-                .encoder(SanitySyncPacket::encode)
-                .decoder(SanitySyncPacket::decode)
-                .consumerMainThread(SanitySyncPacket::handle)
+        CHANNEL.messageBuilder(SanitySyncS2CPacket.class, 0, NetworkDirection.PLAY_TO_CLIENT)
+                .encoder(SanitySyncS2CPacket::encode)
+                .decoder(SanitySyncS2CPacket::decode)
+                .consumerMainThread(SanitySyncS2CPacket::handle)
                 .add();
     }
 
     /**
-     * Отправляет значение только владельцу capability: чужой рассудок клиенту не нужен.
+     * Отправляет произвольный S2C-пакет рассудка конкретному игроку.
+     */
+    public static void sendToPlayer(SanitySyncS2CPacket packet, ServerPlayer player) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), packet);
+    }
+
+    /**
+     * Читает текущее серверное capability и отправляет его владельцу.
      */
     public static void syncTo(ServerPlayer player) {
         player.getCapability(SanityCapability.INSTANCE).ifPresent(data ->
-                CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new SanitySyncPacket(data.getSanity())
-                )
+                sendToPlayer(new SanitySyncS2CPacket(data.getSanity()), player)
         );
     }
 }
