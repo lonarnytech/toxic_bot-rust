@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
  */
 public final class SanityProvider implements ICapabilitySerializable<CompoundTag> {
     public static final ResourceLocation ID =
-            new ResourceLocation(TheDecayingCode.MOD_ID, "sanity");
+            ResourceLocation.fromNamespaceAndPath(TheDecayingCode.MOD_ID, "sanity");
 
     private final PlayerSanity data = new PlayerSanity();
     private final LazyOptional<PlayerSanity> optional = LazyOptional.of(() -> data);

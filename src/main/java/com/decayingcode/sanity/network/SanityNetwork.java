@@ -16,7 +16,7 @@ public final class SanityNetwork {
     private static final String PROTOCOL_VERSION = "1";
 
     private static final SimpleChannel CHANNEL = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(TheDecayingCode.MOD_ID, "sanity"))
+            .named(ResourceLocation.fromNamespaceAndPath(TheDecayingCode.MOD_ID, "sanity"))
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)

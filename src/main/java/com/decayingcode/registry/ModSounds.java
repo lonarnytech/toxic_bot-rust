@@ -20,9 +20,9 @@ import net.minecraftforge.registries.RegisterEvent;
 )
 public final class ModSounds {
     public static final ResourceLocation SANITY_WHISPER_ID =
-            new ResourceLocation(TheDecayingCode.MOD_ID, "sanity_whisper");
+            ResourceLocation.fromNamespaceAndPath(TheDecayingCode.MOD_ID, "sanity_whisper");
     public static final ResourceLocation SANITY_FOOTSTEPS_ID =
-            new ResourceLocation(TheDecayingCode.MOD_ID, "sanity_footsteps");
+            ResourceLocation.fromNamespaceAndPath(TheDecayingCode.MOD_ID, "sanity_footsteps");
 
     public static final SoundEvent SANITY_WHISPER =
             SoundEvent.createVariableRangeEvent(SANITY_WHISPER_ID);
