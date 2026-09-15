@@ -2,7 +2,12 @@ name: Build Forge mod
 
 on:
   push:
+    paths-ignore:
+      - 'artifacts/**'
   pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -33,3 +38,24 @@ jobs:
             echo "::error title=Gradle build failed::$details"
           fi
           exit "$status"
+
+      - name: Upload compiled JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: decaying-code-1.20.1
+          path: build/libs/decaying_code-0.1.0-1.20.1.jar
+          if-no-files-found: error
+
+      - name: Add installable JAR to the branch
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          mkdir -p artifacts
+          cp build/libs/decaying_code-0.1.0-1.20.1.jar artifacts/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add artifacts/decaying_code-0.1.0-1.20.1.jar
+          if ! git diff --cached --quiet; then
+            git commit -m "Add compiled Decaying Code JAR [skip ci]"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
