@@ -1,0 +1,38 @@
+{
+  "sanity_whisper": {
+    "subtitle": "subtitles.decaying_code.sanity_whisper",
+    "sounds": [
+      {
+        "name": "minecraft:ambient.cave",
+        "type": "event",
+        "volume": 0.45,
+        "pitch": 0.65,
+        "weight": 3
+      },
+      {
+        "name": "minecraft:entity.warden.heartbeat",
+        "type": "event",
+        "volume": 0.25,
+        "pitch": 1.2,
+        "weight": 1
+      }
+    ]
+  },
+  "sanity_footsteps": {
+    "subtitle": "subtitles.decaying_code.sanity_footsteps",
+    "sounds": [
+      {
+        "name": "minecraft:block.gravel.step",
+        "type": "event",
+        "volume": 0.55,
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block.deepslate.step",
+        "type": "event",
+        "volume": 0.45,
+        "pitch": 0.75
+      }
+    ]
+  }
+}
